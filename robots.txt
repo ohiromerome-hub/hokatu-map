@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ohiromerome-hub.github.io/hokatu-map/sitemap.xml

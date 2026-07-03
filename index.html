@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>あいち保活マップ｜愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較</title>
+<meta name="description" content="愛知県の保育園・認定こども園・幼稚園3,166施設を地図で比較。名古屋16区＋豊田・岡崎など30市区は最新の空き状況（募集人数）つき。最寄駅・電車バス路線・引越し先からの経路検索・市区町村別の施設数比較も。保活・入園・転園の検討に。公的オープンデータ準拠・無料。">
+<meta name="keywords" content="愛知県,保育園,保活,空き状況,認定こども園,幼稚園,名古屋市,豊田市,岡崎市,一宮市,入園,転園,地図,募集人数">
+<link rel="canonical" href="https://ohiromerome-hub.github.io/hokatu-map/">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#14213d">
+<!-- OGP / Twitter -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="あいち保活マップ">
+<meta property="og:title" content="あいち保活マップ｜愛知県の保育園を空き状況つき地図で比較">
+<meta property="og:description" content="愛知県の保育園・こども園・幼稚園3,166施設を地図で。名古屋16区ほか30市区は空き状況つき。保活・入園・転園に。無料・公的データ準拠。">
+<meta property="og:url" content="https://ohiromerome-hub.github.io/hokatu-map/">
+<meta property="og:image" content="https://ohiromerome-hub.github.io/hokatu-map/ogp.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="あいち保活マップ｜愛知県の保育園を空き状況つき地図で比較">
+<meta name="twitter:description" content="愛知県の保育園・こども園・幼稚園3,166施設。名古屋16区ほか30市区は空き状況つき。保活・入園・転園に。無料。">
+<meta name="twitter:image" content="https://ohiromerome-hub.github.io/hokatu-map/ogp.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"あいち保活マップ",
+  "url":"https://ohiromerome-hub.github.io/hokatu-map/",
+  "applicationCategory":"LifestyleApplication",
+  "operatingSystem":"Web",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
+  "inLanguage":"ja",
+  "description":"愛知県の保育園・認定こども園・幼稚園3,166施設を地図で比較。30市区は最新の空き状況つき。最寄駅・経路検索・市区町村別比較。保活・入園・転園の検討に。",
+  "isBasedOn":"こども家庭庁ここdeサーチ・国土数値情報・各市町村の空き状況公表データ",
+  "keywords":"愛知県 保育園 保活 空き状況 認定こども園 幼稚園 入園 転園"
+}
+</script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<style>
+:root{
+  --hoiku:#2e7d32; --other:#f9a825; --kodomoen:#7b1fa2; --youchien:#1565c0;
+  --ink:#1a2233; --muted:#6b7688; --line:#e3e7ef; --bg:#f6f8fb; --panel:#ffffff;
+  --accent:#0f62fe; --shadow:0 2px 10px rgba(20,30,60,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;color:var(--ink);background:var(--bg);display:flex;flex-direction:column}
+header{background:#14213d;color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;z-index:1100}
+header h1{font-size:16px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+header h1 .sub{font-size:10.5px;font-weight:600;color:#9fb3d9;display:block}
+.searchwrap{flex:1;min-width:200px;max-width:430px;position:relative}
+.searchwrap input{width:100%;padding:9px 12px;border-radius:10px;border:0;font:inherit;font-size:13px;background:rgba(255,255,255,.94)}
+#searchResults{position:absolute;top:42px;left:0;right:0;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);max-height:290px;overflow:auto;display:none;z-index:1200}
+#searchResults .sr{padding:9px 12px;font-size:12.5px;cursor:pointer;border-bottom:1px solid var(--line);color:var(--ink)}
+#searchResults .sr:hover{background:#eef3ff}
+#searchResults .sr .tag{font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px;color:#fff;margin-right:6px}
+#main{flex:1;display:flex;min-height:0;position:relative}
+#panel{width:330px;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:14px;flex-shrink:0;z-index:1000}
+#map{flex:1;min-width:0}
+.sec{margin-bottom:16px}
+.sec h2{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;color:var(--muted)}
+.chip .dot{width:10px;height:10px;border-radius:50%;background:#ccc}
+.chip.on{color:var(--ink);border-color:currentColor}
+.chip.on[data-t="hoiku"]{color:var(--hoiku)} .chip.on[data-t="other"]{color:#b8860b}
+.chip.on[data-t="kodomoen"]{color:var(--kodomoen)} .chip.on[data-t="youchien"]{color:var(--youchien)}
+.chip.on[data-t="rail"]{color:#c62828} .chip.on[data-t="bus"]{color:#00695c}
+.chip .cnt{font-size:10.5px;font-weight:800;opacity:.75}
+select{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:13px;background:#fff}
+.routebox{background:#eef3ff;border:1.5px solid #c9d8ff;border-radius:12px;padding:11px 12px}
+.routebox p{font-size:11.5px;color:#33415e;line-height:1.55;margin-bottom:8px}
+.btn{display:block;width:100%;padding:10px;border:0;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer;text-align:center}
+.btn.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent);margin-top:6px}
+.btn.small{padding:7px;font-size:12px}
+#homeInfo{display:none;margin-top:8px;font-size:12px;color:#33415e}
+#nearList{margin-top:8px}
+.near{display:flex;justify-content:space-between;gap:8px;padding:7px 4px;border-top:1px solid #d8e2f8;font-size:12px;cursor:pointer}
+.near:hover{background:#e3ecff}
+.near .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.near .dist{color:var(--muted);flex-shrink:0;font-weight:700}
+table.cmp{width:100%;border-collapse:collapse;font-size:11.5px}
+table.cmp th{position:sticky;top:0;background:#fff;font-size:10px;color:var(--muted);padding:5px 3px;border-bottom:2px solid var(--line);cursor:pointer;text-align:right;white-space:nowrap}
+table.cmp th:first-child{text-align:left}
+table.cmp td{padding:5px 3px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+table.cmp td:first-child{text-align:left;font-weight:700;cursor:pointer;color:var(--accent);white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+table.cmp tr:hover td{background:#f4f7ff}
+.cmpwrap{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.src{font-size:10px;color:var(--muted);line-height:1.6;margin-top:14px}
+.src a{color:var(--muted)}
+/* popup */
+.leaflet-popup-content{font-family:inherit;font-size:12.5px;line-height:1.55;margin:12px 14px;min-width:230px}
+.pp-type{display:inline-block;font-size:10px;font-weight:800;color:#fff;padding:2px 9px;border-radius:9px;margin-bottom:5px}
+.pp-name{font-size:14.5px;font-weight:800;margin-bottom:3px}
+.pp-addr{color:var(--muted);font-size:11.5px;margin-bottom:7px}
+.pp-row{font-size:11.5px;margin-bottom:3px}
+.pp-links{display:flex;flex-direction:column;gap:5px;margin-top:9px}
+.pp-links a{display:block;text-align:center;padding:7px 8px;border-radius:9px;font-size:11.5px;font-weight:800;text-decoration:none;border:1.5px solid var(--line);color:var(--ink);background:#f8fafd}
+.pp-links a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.home-marker{font-size:26px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+#mobileToggle{display:none}
+footer{background:#14213d;color:#8fa3c7;font-size:9.5px;padding:6px 14px;line-height:1.5;z-index:1100}
+footer a{color:#b7c8e8}
+@media(max-width:820px){
+  #panel{position:absolute;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .25s;width:300px;box-shadow:var(--shadow)}
+  #panel.open{transform:none}
+  #mobileToggle{display:block;position:absolute;left:10px;top:10px;z-index:1001;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 13px;font-size:13px;font-weight:800;box-shadow:var(--shadow);cursor:pointer}
+  header h1 .sub{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🗺 あいち保活マップ<span class="sub">愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較</span></h1>
+  <div class="searchwrap">
+    <input id="q" type="search" placeholder="施設名・駅名・住所で検索（例：千種区 / 刈谷駅 / みなと保育園）" autocomplete="off">
+    <div id="searchResults"></div>
+  </div>
+</header>
+<div id="main">
+  <button id="mobileToggle">☰ 絞り込み</button>
+  <div id="panel">
+    <div class="sec">
+      <h2>施設の種類</h2>
+      <div class="chips" id="typeChips">
+        <div class="chip on" data-t="hoiku"><span class="dot" style="background:var(--hoiku)"></span>保育園・保育所 <span class="cnt" id="c_hoiku"></span></div>
+        <div class="chip on" data-t="other"><span class="dot" style="background:var(--other)"></span>小規模・認可外等 <span class="cnt" id="c_other"></span></div>
+        <div class="chip on" data-t="kodomoen"><span class="dot" style="background:var(--kodomoen)"></span>認定こども園 <span class="cnt" id="c_kodomoen"></span></div>
+        <div class="chip on" data-t="youchien"><span class="dot" style="background:var(--youchien)"></span>幼稚園 <span class="cnt" id="c_youchien"></span></div>
+      </div>
+    </div>
+    <div class="sec">
+      <h2>空き状況で絞り込み</h2>
+      <div class="chips">
+        <div class="chip" data-t="akionly" id="chipAki"><span class="dot" style="background:#2e7d32"></span>空きあり施設のみ <span class="cnt" id="c_aki"></span></div>
+      </div>
+      <div id="akiNote" style="font-size:10px;color:#6b7688;margin-top:5px;line-height:1.5"></div>
+    </div>
+    <div class="sec">
+      <h2>交通レイヤー</h2>
+      <div class="chips">
+        <div class="chip" data-t="rail" id="chipRail"><span class="dot" style="background:#c62828"></span>電車路線・駅</div>
+        <div class="chip" data-t="bus" id="chipBus"><span class="dot" style="background:#00695c"></span>バス路線・バス停</div>
+      </div>
+    </div>
+    <div class="sec">
+      <h2>市区町村で絞り込み</h2>
+      <select id="citySel"><option value="">すべての市区町村</option></select>
+    </div>
+    <div class="sec">
+      <h2>🏠 引越し先から探す（経路検索）</h2>
+      <div class="routebox">
+        <p>引越し候補地にピンを置くと、近い施設ランキング・徒歩時間・各施設への乗換案内が使えます。</p>
+        <button class="btn small" id="setHome">📍 地図をタップしてピンを置く</button>
+        <button class="btn ghost small" id="clearHome" style="display:none">ピンを消す</button>
+        <div id="homeInfo"></div>
+        <div id="nearList"></div>
+      </div>
+    </div>
+    <div class="sec">
+      <h2>市区町村の施設数 比較（タップで移動）</h2>
+      <div class="cmpwrap">
+        <table class="cmp" id="cmpTable">
+          <thead><tr>
+            <th data-k="c">市区町村</th><th data-k="hoiku">保育園</th><th data-k="other">小規模等</th><th data-k="kodomoen">こども園</th><th data-k="youchien">幼稚園</th><th data-k="total">計</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="src">
+      出典：国土数値情報（福祉施設 P14 2021年度・学校 P29 2023年度・鉄道 N02 2023年度・バス停留所 P11/バスルート N07 2022年度、国土交通省）を加工。
+      空き状況は各市町村の公式ページ・<a href="https://www.wam.go.jp/kokodesearch/" target="_blank" rel="noopener">ここdeサーチ</a>で必ず最新を確認してください。
+      地図 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+<footer>本サイトの施設情報は公的オープンデータに基づく参考情報です。入園可否・空き状況・保育料は必ず各市町村・各施設の公式情報をご確認ください。</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="data/embedded.js?v=9bf427fa"></script>
+<script>
+const COLORS={hoiku:'#2e7d32',other:'#f9a825',kodomoen:'#7b1fa2',youchien:'#1565c0'};
+const LABELS={hoiku:'保育園・保育所',other:'小規模・認可外等',kodomoen:'認定こども園',youchien:'幼稚園'};
+// 主要市の空き状況 公式ページ（curated・随時更新）
+// 自治体サイトは深いURLがすぐ変わり404化するため、原則Google検索で公式ページへ着地させる
+// （検証で生存を確認できた自治体トップのみ直リンク）。基準日 2026-07-03
+const AKI_LINKS={
+ '名古屋市':'https://www.city.nagoya.jp/kurashi/category/8-14-4-1-3-0-0-0-0-0.html'
+};
+function akiLink(city){
+  const base=city.startsWith('名古屋市')?'名古屋市':city;
+  return AKI_LINKS[base]||('https://www.google.com/search?q='+encodeURIComponent(base+' 保育園 入園 空き状況'));
+}
+
+// ---- 空き状況（市別・対応市のみ）----
+const AKI=window.__AKI||{};
+function akiNorm(s){
+  s=(s||'').normalize('NFKC')
+    .replace(/[（(][^）)]*[）)]/g,'')            // 括弧は中身ごと除去（例:（長時間利用））
+    .replace(/[【】\[\]\s　・]/g,'').replace(/^(公|私)/,'')
+    .replace(/^[^市町村]{0,4}[市町村]立/,'')      // 「半田市立」「豊田市立」等の設置者プレフィクス除去
+    .replace(/淨/g,'浄').replace(/ヶ/g,'ケ')
+    .replace(/(認定こども園|こども園|保育園|保育所|幼稚園|幼児園|乳児園|保育室)$/,'');
+  return s;
+}
+const AKI_INDEX={};  // city → {normName: item}
+for(const city in AKI){
+  const idx={};
+  for(const k in AKI[city].items) idx[akiNorm(k)]=AKI[city].items[k];
+  AKI_INDEX[city]=idx;
+}
+function akiOf(f){
+  const a=AKI[f.c]; if(!a) return null;
+  const item=AKI_INDEX[f.c][akiNorm(f.n)];
+  return item?{...a,item}:null;
+}
+function akiNum(v){const m=(v||'').match(/^(\d+)人?$/);return m?parseInt(m[1],10):null;}
+function akiMark(v){
+  if(!v) return '';
+  const n=akiNum(v);
+  if(n!==null)return n>0?'<span style="color:#2e7d32;font-weight:800">'+n+'</span>':'<span style="color:#c62828;font-weight:800">0</span>';
+  if(/[〇○◎]/.test(v))return '<span style="color:#2e7d32;font-weight:800">'+v.match(/[〇○◎]/)[0]+'</span>';
+  if(v.includes('▲')||v.includes('△'))return '<span style="color:#b8860b;font-weight:800">'+v+'</span>';
+  if(v.includes('×'))return '<span style="color:#c62828;font-weight:800">×</span>';
+  if(v.includes('休園'))return '<span style="color:#98a3b8">休園</span>';
+  if(v.includes('未実施'))return '<span style="color:#98a3b8">－</span>';
+  if(v.includes('直接'))return '<span style="color:#98a3b8">園に確認</span>';
+  return '<span style="color:#98a3b8">'+v.slice(0,6)+'</span>';
+}
+function hasAki(f){
+  const a=akiOf(f); if(!a)return false;
+  return a.item.aki.some(v=>{
+    if(/[〇○◎△▲]/.test(v))return true;
+    const n=akiNum(v);return n!==null&&n>0;
+  });
+}
+
+const map=L.map('map',{zoomControl:true}).setView([35.05,137.0],10);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+
+let FAC=[],STATIONS=[],home=null,homeMarker=null,nearLines=[];
+const activeTypes=new Set(['hoiku','other','kodomoen','youchien']);
+let cityFilter='';
+const cluster=L.markerClusterGroup({maxClusterRadius:46,disableClusteringAtZoom:15});
+map.addLayer(cluster);
+
+const R=6371000;
+function dist(a,b){const dLat=(b[0]-a[0])*Math.PI/180,dLng=(b[1]-a[1])*Math.PI/180,la=a[0]*Math.PI/180,lb=b[0]*Math.PI/180;const h=Math.sin(dLat/2)**2+Math.cos(la)*Math.cos(lb)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+function walkMin(m){return Math.max(1,Math.round(m/80));}
+function fmtD(m){return m<1000?Math.round(m)+'m':(m/1000).toFixed(1)+'km';}
+
+function nearestStation(lat,lng){
+  let best=null,bd=1e12;
+  for(const s of STATIONS){const d=dist([lat,lng],[s.lat,s.lng]);if(d<bd){bd=d;best=s;}}
+  return best?{...best,d:bd}:null;
+}
+
+function popupHTML(f){
+  const st=nearestStation(f.lat,f.lng);
+  const gq=encodeURIComponent(f.n+' '+f.a);
+  let h='<span class="pp-type" style="background:'+COLORS[f.t]+'">'+LABELS[f.t]+'</span>'
+   +'<div class="pp-name">'+f.n+'</div><div class="pp-addr">'+f.a+'</div>';
+  if(st) h+='<div class="pp-row">🚉 最寄駅：<b>'+st.n+'</b>（'+st.l+'）'+fmtD(st.d)+'・徒歩約'+walkMin(st.d)+'分</div>';
+  const ak=akiOf(f);
+  if(ak){
+    h+='<div style="margin:7px 0 4px;border:1.5px solid #e3e7ef;border-radius:9px;overflow:hidden">'
+     +'<div style="background:#f2f6fc;padding:4px 8px;font-size:10.5px;font-weight:800;color:#33415e">🈳 空き状況（'+ak.target+'・'+ak.asof+'時点）</div>'
+     +'<table style="width:100%;border-collapse:collapse;font-size:11px;text-align:center">'
+     +'<tr>'+ak.ages.map(a=>'<td style="padding:2px;background:#fafbfd;color:#6b7688;font-size:9.5px">'+a+'</td>').join('')+'</tr>'
+     +'<tr>'+ak.item.aki.map(v=>'<td style="padding:3px;border-top:1px solid #eef1f6">'+akiMark(v)+'</td>').join('')+'</tr>'
+     +'</table></div>'
+     +'<div class="pp-row" style="color:#98a3b8;font-size:9.5px">'+((ak.legend||'').slice(0,90))+' ／ 最新は市公式で要確認</div>';
+  }
+  if(home) h+='<div class="pp-row">🏠 ピンから <b>'+fmtD(dist([home.lat,home.lng],[f.lat,f.lng]))+'</b>・徒歩約'+walkMin(dist([home.lat,home.lng],[f.lat,f.lng]))+'分</div>';
+  h+='<div class="pp-row" style="color:#98a3b8;font-size:10.5px">出典：'+({kokode:'ここdeサーチ（こども家庭庁）',mlit:'国土数値情報（国交省）',city:'市公式データ',osm:'OpenStreetMap'}[f.s]||'公的オープンデータ')+'</div>';
+  h+='<div class="pp-links">';
+  if(home) h+='<a class="primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin='+home.lat+','+home.lng+'&destination='+f.lat+','+f.lng+'&travelmode=transit">🚃 ピンからの乗換案内（Googleマップ）</a>';
+  h+='<a target="_blank" rel="noopener" href="'+akiLink(f.c)+'">📋 '+(f.c.startsWith('名古屋市')?'名古屋市':f.c)+'の空き状況・入園案内を調べる</a>'
+   +'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+gq+'">📍 Googleマップで見る</a>'
+   +'<a target="_blank" rel="noopener" href="https://www.wam.go.jp/kokodesearch/">🔎 ここdeサーチで詳細を確認</a></div>';
+  return h;
+}
+
+let akiOnly=false;
+function renderMarkers(){
+  cluster.clearLayers();
+  FAC.forEach(f=>{f._m=null;});
+  const ms=[];
+  for(const f of FAC){
+    if(!activeTypes.has(f.t))continue;
+    if(cityFilter&&f.c!==cityFilter)continue;
+    if(akiOnly&&!hasAki(f))continue;
+    const m=L.circleMarker([f.lat,f.lng],{radius:7,color:'#fff',weight:1.5,fillColor:COLORS[f.t],fillOpacity:.92});
+    m.bindPopup(()=>popupHTML(f),{maxWidth:290});
+    f._m=m;ms.push(m);
+  }
+  cluster.addLayers(ms);
+}
+
+// ---- 比較テーブル ----
+let SUMMARY={},sortKey='total',sortDesc=true;
+function renderTable(){
+  const rows=Object.entries(SUMMARY).filter(([c])=>c!=='不明').map(([c,v])=>({c,hoiku:v.hoiku||0,other:v.other||0,kodomoen:v.kodomoen||0,youchien:v.youchien||0,total:(v.hoiku||0)+(v.other||0)+(v.kodomoen||0)+(v.youchien||0)}));
+  rows.sort((a,b)=>sortKey==='c'?a.c.localeCompare(b.c,'ja'):(sortDesc?b[sortKey]-a[sortKey]:a[sortKey]-b[sortKey]));
+  document.querySelector('#cmpTable tbody').innerHTML=rows.map(r=>'<tr><td data-c="'+r.c+'">'+r.c+'</td><td>'+r.hoiku+'</td><td>'+r.other+'</td><td>'+r.kodomoen+'</td><td>'+r.youchien+'</td><td><b>'+r.total+'</b></td></tr>').join('');
+  document.querySelectorAll('#cmpTable td[data-c]').forEach(td=>td.onclick=()=>{selectCity(td.getAttribute('data-c'));});
+}
+document.querySelectorAll('#cmpTable th').forEach(th=>th.onclick=()=>{const k=th.getAttribute('data-k');if(sortKey===k)sortDesc=!sortDesc;else{sortKey=k;sortDesc=k!=='c';}renderTable();});
+
+function selectCity(c){
+  cityFilter=c;document.getElementById('citySel').value=c;renderMarkers();
+  const pts=FAC.filter(f=>f.c===c);
+  if(pts.length)map.fitBounds(L.latLngBounds(pts.map(f=>[f.lat,f.lng])),{padding:[40,40]});
+  document.getElementById('panel').classList.remove('open');
+}
+
+// ---- 鉄道レイヤー ----
+let railLayer=null,railOn=false;
+function railColor(op){if(/東海旅客|日本国有/.test(op||''))return '#e65100';if(/名古屋鉄道/.test(op||''))return '#c62828';if(/名古屋市/.test(op||''))return '#6a1b9a';if(/近畿日本/.test(op||''))return '#00838f';return '#546e7a';}
+async function toggleRail(){
+  railOn=!railOn;document.getElementById('chipRail').classList.toggle('on',railOn);
+  if(railOn&&!railLayer){
+    let lines;
+    try{lines=await fetch('data/rail_lines.geojson').then(r=>r.json());}
+    catch(e){railOn=false;document.getElementById('chipRail').classList.remove('on');alert('電車路線の表示にはWebサーバー経由でのアクセスが必要です（ファイルを直接開いた場合は路線データを読み込めません）。GitHub Pages等で公開すると表示されます。');return;}
+    railLayer=L.layerGroup();
+    L.geoJSON(lines,{style:f=>({color:railColor(f.properties.o),weight:2.2,opacity:.85}),
+      onEachFeature:(f,l)=>l.bindTooltip((f.properties.l||'')+'（'+(f.properties.o||'')+'）',{sticky:true})}).addTo(railLayer);
+    for(const s of STATIONS){L.circleMarker([s.lat,s.lng],{radius:3.5,color:'#fff',weight:1,fillColor:'#37474f',fillOpacity:1}).bindTooltip('🚉 '+s.n+'（'+s.l+'）').addTo(railLayer);}
+  }
+  if(railLayer){railOn?railLayer.addTo(map):map.removeLayer(railLayer);}
+}
+
+// ---- バスレイヤー ----
+let busLayer=null,busOn=false;
+async function toggleBus(){
+  busOn=!busOn;document.getElementById('chipBus').classList.toggle('on',busOn);
+  const chip=document.getElementById('chipBus');
+  if(busOn&&!busLayer){
+    chip.style.opacity=.5;
+    let routes,stops;
+    try{[routes,stops]=await Promise.all([
+      fetch('data/bus_routes.geojson').then(r=>r.json()),
+      fetch('data/bus_stops.geojson').then(r=>r.json())]);}
+    catch(e){busOn=false;chip.classList.remove('on');chip.style.opacity=1;alert('バス路線の表示にはWebサーバー経由でのアクセスが必要です（ファイルを直接開いた場合はバスデータを読み込めません）。GitHub Pages等で公開すると表示されます。');return;}
+    busLayer=L.layerGroup();
+    L.geoJSON(routes,{style:{color:'#00897b',weight:1.1,opacity:.5}}).addTo(busLayer);
+    const bc=L.markerClusterGroup({maxClusterRadius:40,disableClusteringAtZoom:16,iconCreateFunction:c=>L.divIcon({html:'<div style="background:#00897b;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid #fff">'+c.getChildCount()+'</div>',iconSize:[28,28]})});
+    L.geoJSON(stops,{pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:3,color:'#fff',weight:1,fillColor:'#00695c',fillOpacity:1}).bindTooltip('🚌 '+(f.properties.n||'バス停')+'（'+(f.properties.o||'')+'）')}).eachLayer(l=>bc.addLayer(l));
+    busLayer.addLayer(bc);
+    chip.style.opacity=1;
+  }
+  if(busLayer){busOn?busLayer.addTo(map):map.removeLayer(busLayer);}
+}
+
+// ---- 自宅ピン・経路 ----
+let placing=false;
+document.getElementById('setHome').onclick=()=>{placing=true;document.getElementById('setHome').textContent='🗺 地図の好きな場所をタップ…';document.getElementById('panel').classList.remove('open');};
+document.getElementById('clearHome').onclick=()=>{setHome(null);};
+map.on('click',e=>{if(placing){setHome({lat:e.latlng.lat,lng:e.latlng.lng});placing=false;}});
+function setHome(h){
+  home=h;
+  if(homeMarker){map.removeLayer(homeMarker);homeMarker=null;}
+  nearLines.forEach(l=>map.removeLayer(l));nearLines=[];
+  document.getElementById('setHome').textContent='📍 地図をタップしてピンを置く';
+  document.getElementById('clearHome').style.display=h?'block':'none';
+  const info=document.getElementById('homeInfo'),list=document.getElementById('nearList');
+  if(!h){info.style.display='none';list.innerHTML='';return;}
+  homeMarker=L.marker([h.lat,h.lng],{icon:L.divIcon({className:'home-marker',html:'🏠',iconSize:[26,26],iconAnchor:[13,24]}),zIndexOffset:1000}).addTo(map);
+  const st=nearestStation(h.lat,h.lng);
+  info.style.display='block';
+  info.innerHTML='🏠 ピン設置済み'+(st?('　最寄駅：<b>'+st.n+'</b> '+fmtD(st.d)+'（徒歩約'+walkMin(st.d)+'分）'):'');
+  const cands=FAC.filter(f=>activeTypes.has(f.t)).map(f=>({f,d:dist([h.lat,h.lng],[f.lat,f.lng])})).sort((a,b)=>a.d-b.d).slice(0,10);
+  list.innerHTML='<div style="font-size:11px;font-weight:800;color:#33415e;margin-top:8px">近い施設トップ10（表示中の種類）</div>'
+    +cands.map((x,i)=>'<div class="near" data-i="'+FAC.indexOf(x.f)+'"><span class="nm">'+(i+1)+'. <span style="color:'+COLORS[x.f.t]+'">●</span> '+x.f.n+'</span><span class="dist">'+fmtD(x.d)+'・徒歩'+walkMin(x.d)+'分</span></div>').join('');
+  list.querySelectorAll('.near').forEach(el=>el.onclick=()=>{
+    const f=FAC[+el.getAttribute('data-i')];
+    map.setView([f.lat,f.lng],16);
+    const ln=L.polyline([[h.lat,h.lng],[f.lat,f.lng]],{color:'#0f62fe',weight:2,dashArray:'6 6',opacity:.7}).addTo(map);
+    nearLines.push(ln);
+    if(f._m)f._m.openPopup();else L.popup({maxWidth:290}).setLatLng([f.lat,f.lng]).setContent(popupHTML(f)).openOn(map);
+  });
+}
+
+// ---- 検索（施設・駅 内部 + 住所 Nominatim） ----
+const q=document.getElementById('q'),sr=document.getElementById('searchResults');
+let qTimer=null;
+q.addEventListener('input',()=>{clearTimeout(qTimer);qTimer=setTimeout(doSearch,280);});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){clearTimeout(qTimer);doSearch(true);}});
+document.addEventListener('click',e=>{if(!e.target.closest('.searchwrap'))sr.style.display='none';});
+async function doSearch(withGeo){
+  const kw=q.value.trim();
+  if(kw.length<2){sr.style.display='none';return;}
+  let items=[];
+  for(const f of FAC){if(f.n.includes(kw)||f.a.includes(kw)||f.c.includes(kw)){items.push({label:f.n,sub:f.c,color:COLORS[f.t],lat:f.lat,lng:f.lng,z:16,f});if(items.length>=8)break;}}
+  for(const s of STATIONS){if(items.length>=12)break;if((s.n||'').includes(kw.replace(/駅$/,'')))items.push({label:'🚉 '+s.n+'駅',sub:s.l,color:'#37474f',lat:s.lat,lng:s.lng,z:15});}
+  if(withGeo&&items.length<3){
+    try{const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&countrycodes=jp&limit=3&q='+encodeURIComponent('愛知県 '+kw));
+      const js=await r.json();
+      js.forEach(g=>items.push({label:'📍 '+g.display_name.split(',').slice(0,3).join(' '),sub:'住所検索',color:'#0f62fe',lat:+g.lat,lng:+g.lon,z:15}));
+    }catch(e){}
+  }
+  sr.innerHTML=items.length?items.map((it,i)=>'<div class="sr" data-i="'+i+'"><span class="tag" style="background:'+it.color+'">&nbsp;</span>'+it.label+'<span style="color:#999;font-size:10.5px">　'+(it.sub||'')+'</span></div>').join(''):'<div class="sr">見つかりません（Enterで住所検索）</div>';
+  sr.style.display='block';
+  sr.querySelectorAll('.sr[data-i]').forEach(el=>el.onclick=()=>{
+    const it=items[+el.getAttribute('data-i')];
+    map.setView([it.lat,it.lng],it.z);
+    if(it.f){if(it.f._m)it.f._m.openPopup();else L.popup({maxWidth:290}).setLatLng([it.lat,it.lng]).setContent(popupHTML(it.f)).openOn(map);}
+    sr.style.display='none';
+  });
+}
+
+// ---- チップ・セレクト・モバイル ----
+document.querySelectorAll('#typeChips .chip').forEach(ch=>ch.onclick=()=>{
+  const t=ch.getAttribute('data-t');
+  if(activeTypes.has(t)){activeTypes.delete(t);ch.classList.remove('on');}else{activeTypes.add(t);ch.classList.add('on');}
+  renderMarkers();if(home)setHome(home);
+});
+document.getElementById('chipAki').onclick=()=>{
+  akiOnly=!akiOnly;
+  document.getElementById('chipAki').classList.toggle('on',akiOnly);
+  renderMarkers();if(home)setHome(home);
+};
+document.getElementById('chipRail').onclick=toggleRail;
+document.getElementById('chipBus').onclick=toggleBus;
+document.getElementById('citySel').onchange=e=>{if(e.target.value)selectCity(e.target.value);else{cityFilter='';renderMarkers();map.setView([35.05,137.0],10);}};
+document.getElementById('mobileToggle').onclick=()=>document.getElementById('panel').classList.toggle('open');
+
+// ---- 初期化 ----
+// core data（施設・集計・駅）は data/embedded.js で同梱済み → file://でも動く。
+// 万一未読込ならHTTP fetchにフォールバック。
+async function loadCore(){
+  if(window.__FAC&&window.__SUMMARY&&window.__STATIONS)
+    return {fac:window.__FAC,sum:window.__SUMMARY,sta:window.__STATIONS};
+  const [fac,sum,sta]=await Promise.all([
+    fetch('data/facilities.geojson').then(r=>r.json()),
+    fetch('data/summary.json').then(r=>r.json()),
+    fetch('data/rail_stations.geojson').then(r=>r.json())]);
+  return {fac,sum,sta};
+}
+(async function(){
+  const {fac,sum,sta}=await loadCore();
+  FAC=fac.features.map(f=>({n:f.properties.n,t:f.properties.t,c:f.properties.c,a:f.properties.a,s:f.properties.s,lng:f.geometry.coordinates[0],lat:f.geometry.coordinates[1]}));
+  STATIONS=sta.features.map(f=>({n:f.properties.n,l:f.properties.l,o:f.properties.o,lng:f.geometry.coordinates[0],lat:f.geometry.coordinates[1]}));
+  SUMMARY=sum;
+  const cnt={hoiku:0,other:0,kodomoen:0,youchien:0};
+  FAC.forEach(f=>cnt[f.t]++);
+  for(const k in cnt)document.getElementById('c_'+k).textContent=cnt[k];
+  // 空き状況の対応市と件数
+  const akiCities=Object.keys(AKI);
+  if(akiCities.length){
+    const nAki=FAC.filter(hasAki).length;
+    document.getElementById('c_aki').textContent=nAki;
+    document.getElementById('akiNote').innerHTML='対応: '+akiCities.map(c=>c+'（'+AKI[c].asof+'時点）').join('・')+'。他の市町村は今後追加予定。最新は必ず市公式で確認を';
+  }else{
+    document.getElementById('chipAki').style.display='none';
+    document.getElementById('akiNote').textContent='';
+  }
+  const sel=document.getElementById('citySel');
+  Object.keys(sum).filter(c=>c!=='不明').sort((a,b)=>a.localeCompare(b,'ja')).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+  renderMarkers();renderTable();
+})();
+</script>
+</body>
+</html>
