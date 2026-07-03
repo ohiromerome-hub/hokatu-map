@@ -284,7 +284,8 @@ function popupHTML(f){
   if(home) h+='<a class="primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin='+home.lat+','+home.lng+'&destination='+f.lat+','+f.lng+'&travelmode=transit">🚃 ピンからの乗換案内（Googleマップ）</a>';
   h+='<a target="_blank" rel="noopener" href="'+akiLink(f.c)+'">📋 '+(f.c.startsWith('名古屋市')?'名古屋市':f.c)+'の空き状況・入園案内を調べる</a>'
    +'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+gq+'">📍 Googleマップで見る</a>'
-   +'<a target="_blank" rel="noopener" href="https://www.wam.go.jp/kokodesearch/">🔎 ここdeサーチで詳細を確認</a></div>';
+   +'<a target="_blank" rel="noopener" href="https://www.wam.go.jp/kokodesearch/">🔎 ここdeサーチで詳細を確認</a>'
+   +'<a target="_blank" rel="noopener" href="https://ohiromerome-hub.github.io/yoyu-sim/'+(f.t==='other'?'?childcare=70000':'')+'">💰 保育費の家計インパクトをシミュ（よゆうシミュ）</a></div>';
   return h;
 }
 
