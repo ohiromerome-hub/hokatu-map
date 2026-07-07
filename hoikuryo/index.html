@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>名古屋市の保育料 かんたん計算（概算）｜あいち保活マップ</title>
+<meta name="description" content="名古屋市の認可保育園の保育料を、市民税所得割額（または世帯年収の目安）からかんたんに概算できる無料ツール。0〜2歳児クラスの月額目安・3歳以上の無償化・きょうだい軽減にも対応。あくまで概算です。正確な金額は名古屋市の公式情報でご確認ください。">
+<link rel="canonical" href="https://ohiromerome-hub.github.io/hokatu-map/hoikuryo/">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#14213d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="あいち保活マップ">
+<meta property="og:title" content="名古屋市の保育料 かんたん計算（概算）">
+<meta property="og:description" content="市民税所得割額（または世帯年収の目安）から名古屋市の認可保育料を概算。0〜2歳の月額目安・3歳以上の無償化・きょうだい軽減に対応。無料。">
+<meta property="og:url" content="https://ohiromerome-hub.github.io/hokatu-map/hoikuryo/">
+<meta property="og:image" content="https://ohiromerome-hub.github.io/hokatu-map/ogp.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"名古屋市の保育料かんたん計算（概算）","url":"https://ohiromerome-hub.github.io/hokatu-map/hoikuryo/","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"inLanguage":"ja","isPartOf":{"@type":"WebSite","name":"あいち保活マップ","url":"https://ohiromerome-hub.github.io/hokatu-map/"}}
+</script>
+<style>
+:root{--ink:#1a2233;--muted:#6b7688;--line:#e3e7ef;--bg:#f6f8fb;--panel:#fff;--accent:#0f62fe;--shadow:0 2px 10px rgba(20,30,60,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;color:var(--ink);background:var(--bg);line-height:1.65}
+header{background:#14213d;color:#fff;padding:10px 16px}
+header .h{font-size:16px;font-weight:800}
+header .h a{color:#fff;text-decoration:none}
+header .h .sub{font-size:10.5px;font-weight:600;color:#9fb3d9;display:block}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+.crumb{font-size:11.5px;color:var(--muted);margin-bottom:12px}
+.crumb a{color:var(--accent);text-decoration:none}
+h1{font-size:21px;font-weight:800;line-height:1.4;margin-bottom:10px}
+.lead{font-size:13.5px;color:#33415e;margin-bottom:14px}
+.warn{background:#fff8e6;border:1.5px solid #f0dfa8;border-radius:12px;padding:12px 14px;font-size:12px;color:#6b5a1e;margin-bottom:18px}
+.card{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h2{font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.05em;margin-bottom:10px}
+label{display:block;font-size:12px;font-weight:800;margin:12px 0 5px}
+label:first-of-type{margin-top:0}
+input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:14px;background:#fff}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:90px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer}
+.seg button.on{border-color:var(--accent);color:var(--accent);background:#eef3ff}
+.hint{font-size:11px;color:var(--muted);margin-top:4px}
+.result{background:#eef3ff;border:1.5px solid #c9d8ff;border-radius:14px;padding:16px;margin-top:14px;display:none}
+.result .big{font-size:28px;font-weight:800;color:#0f3fbe}
+.result .big small{font-size:13px;font-weight:700;color:#33415e}
+.result .row{font-size:12px;color:#33415e;margin-top:6px}
+.btn{display:inline-block;padding:11px 18px;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-size:13.5px;font-weight:800;border:0;cursor:pointer;text-decoration:none}
+.btn.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+details{margin-top:10px;font-size:12px}
+summary{cursor:pointer;font-weight:800;color:var(--accent);font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px}
+th{background:#f2f6fc;color:var(--muted);font-size:10px;text-align:left;padding:6px 8px;white-space:nowrap}
+td{padding:6px 8px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.src{font-size:10.5px;color:var(--muted);margin-top:24px;line-height:1.7}
+.src a{color:var(--muted)}
+footer{background:#14213d;color:#8fa3c7;font-size:9.5px;padding:8px 14px;line-height:1.5}
+.links a{display:inline-block;margin:4px 8px 0 0;font-size:12px;color:var(--accent);text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="h"><a href="../">🗺 あいち保活マップ</a><span class="sub">愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較</span></div></header>
+<main>
+<nav class="crumb"><a href="../">あいち保活マップ</a> › 保育料かんたん計算</nav>
+<h1>名古屋市の保育料 かんたん計算（概算）</h1>
+<p class="lead">名古屋市の認可保育園・認定こども園（保育利用）の保育料は、<b>世帯の市民税所得割額</b>と<b>子どもの年齢クラス</b>で決まります。所得割額（わからなければ世帯年収の目安）を入れるだけで、月額のめやすを概算できます。</p>
+<div class="warn">⚠️ <b>この結果はあくまで概算（めやす）です。</b>実際の保育料は階層区分・保育時間認定・軽減制度の適用によって変わります。正確な金額は必ず<a href="https://www.city.nagoya.jp/kurashi/category/8-14-4-1-3-0-0-0-0-0.html" target="_blank" rel="noopener">名古屋市の公式ページ</a>・お住まいの区役所の窓口でご確認ください。</div>
+
+<div class="card">
+  <h2>入力</h2>
+  <label>① 世帯の市民税所得割額（父母の合算・年額）</label>
+  <input id="tax" type="number" inputmode="numeric" min="0" step="1000" placeholder="例：150000（円）">
+  <div class="hint">6月ごろに届く「市民税・県民税 税額決定通知書」の「所得割額」を父母で合算。ふるさと納税（寄附金税額控除）や住宅ローン控除の一部は、保育料の判定では適用前の額で見られる場合があります。</div>
+  <details>
+    <summary>所得割額がわからない → 世帯年収からざっくり入れる</summary>
+    <div class="tblwrap"><table>
+      <thead><tr><th>世帯年収（額面合計）</th><th>所得割額のめやす</th></tr></thead>
+      <tbody>
+        <tr><td>約300万円</td><td>約55,000円</td></tr>
+        <tr><td>約400万円</td><td>約100,000円</td></tr>
+        <tr><td>約500万円</td><td>約145,000円</td></tr>
+        <tr><td>約600万円</td><td>約200,000円</td></tr>
+        <tr><td>約700万円</td><td>約260,000円</td></tr>
+        <tr><td>約800万円</td><td>約320,000円</td></tr>
+      </tbody>
+    </table></div>
+    <div class="hint">共働きの場合はそれぞれの所得割額の合計。扶養・控除の状況で大きく変わる、あくまでざっくりのめやすです。</div>
+  </details>
+
+  <label>② 子どもの年齢クラス（入園する年度の4月1日時点）</label>
+  <div class="seg" id="ageSeg">
+    <button data-v="u3" class="on">0〜2歳児クラス</button>
+    <button data-v="o3">3〜5歳児クラス</button>
+  </div>
+
+  <label>③ 何人目のお子さんですか？</label>
+  <div class="seg" id="kidSeg">
+    <button data-v="1" class="on">第1子</button>
+    <button data-v="2">第2子</button>
+    <button data-v="3">第3子以降</button>
+  </div>
+
+  <div style="margin-top:16px"><button class="btn" id="calc">💰 保育料を概算する</button></div>
+
+  <div class="result" id="result">
+    <div class="big" id="rMonth"></div>
+    <div class="row" id="rYear"></div>
+    <div class="row" id="rNote"></div>
+    <div class="row" style="color:#98a3b8;font-size:10.5px;margin-top:8px">※ 概算です。給食費（3〜5歳）・延長保育料・行事費等は別途かかります。正確には名古屋市・区役所の窓口でご確認ください。</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>概算に使っている階層表（0〜2歳児クラス・標準時間・第1子の月額めやす）</h2>
+  <div class="tblwrap"><table>
+    <thead><tr><th>世帯の状況／市民税所得割額</th><th>月額のめやす</th></tr></thead>
+    <tbody id="tierTable"></tbody>
+  </table></div>
+  <div class="hint" style="margin-top:8px">国の徴収基準と名古屋市の軽減傾向をもとにした概算表です。名古屋市の実際の階層はもっと細かく分かれており、金額もこの表と異なる場合があります。最新の正式な保育料表は<a href="https://www.city.nagoya.jp/kurashi/category/8-14-4-1-3-0-0-0-0-0.html" target="_blank" rel="noopener">名古屋市公式ページ</a>をご覧ください。</div>
+</div>
+
+<div class="card">
+  <h2>知っておきたいポイント</h2>
+  <div style="font-size:12.5px;color:#33415e">
+    <p style="margin-bottom:8px">・<b>3〜5歳児クラスは幼児教育・保育の無償化の対象</b>で、認可保育園の保育料は0円です（給食費・行事費などは別途）。</p>
+    <p style="margin-bottom:8px">・<b>きょうだいの軽減：</b>国基準では第2子は半額・第3子以降は無料。名古屋市はさらに独自の軽減（第2子以降の無償化拡充など）を行っている場合があります。適用条件（年齢のカウント方法・所得制限）は必ず市公式でご確認ください。</p>
+    <p style="margin-bottom:8px">・保育料は<b>4月〜8月分は前年度、9月〜翌3月分は当年度</b>の市民税をもとに決まるため、年度の途中で金額が変わることがあります。</p>
+    <p>・小規模保育・認可外保育施設は料金体系が異なります（認可外は施設ごとの自由設定）。</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>あわせて使う</h2>
+  <div class="links">
+    <a href="../">🗺 あいち保活マップ（空き状況つき地図）</a>
+    <a href="../city/nagoya-naka/">📄 名古屋市の区別 保育園一覧</a>
+    <a href="https://ohiromerome-hub.github.io/yoyu-sim/" target="_blank" rel="noopener">💰 よゆうシミュ（家賃×保育料の家計シミュ）</a>
+  </div>
+</div>
+
+<div class="src">
+  本ツールの階層表は、国の利用者負担（徴収金）基準額と名古屋市の公表情報を参考にした<b>概算</b>です。正確な保育料は名古屋市の正式な保育料表・各区役所の窓口でご確認ください。<br>
+  あいち保活マップ — 愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較（無料・公的オープンデータ準拠）
+</div>
+</main>
+<footer>本サイトの情報は参考情報です。入園可否・空き状況・保育料は必ず各市町村・各施設の公式情報をご確認ください。</footer>
+<script>
+// 概算階層表（0〜2歳児クラス・標準時間・第1子・月額）
+// 国の徴収基準額をベースに、名古屋市など政令市の軽減傾向を踏まえた「めやす」
+const TIERS=[
+ {label:'生活保護世帯',max:-2,fee:0},
+ {label:'市民税非課税世帯',max:-1,fee:0},
+ {label:'市民税均等割のみ課税（所得割0円）',max:0,fee:5000},
+ {label:'所得割 〜48,600円未満',max:48600,fee:9500},
+ {label:'所得割 48,600〜97,000円未満',max:97000,fee:21000},
+ {label:'所得割 97,000〜169,000円未満',max:169000,fee:35000},
+ {label:'所得割 169,000〜301,000円未満',max:301000,fee:48000},
+ {label:'所得割 301,000〜397,000円未満',max:397000,fee:58000},
+ {label:'所得割 397,000円以上',max:Infinity,fee:64000}
+];
+const yen=n=>n.toLocaleString('ja-JP');
+document.getElementById('tierTable').innerHTML=TIERS.map(t=>'<tr><td>'+t.label+'</td><td><b>'+(t.fee===0?'0円':yen(t.fee)+'円')+'</b></td></tr>').join('');
+
+let age='u3',kid=1;
+function seg(id,cb){document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('on'));b.classList.add('on');cb(b.getAttribute('data-v'));});}
+seg('ageSeg',v=>age=v);seg('kidSeg',v=>kid=+v);
+
+document.getElementById('calc').onclick=()=>{
+  const r=document.getElementById('result');
+  const tax=parseInt(document.getElementById('tax').value,10);
+  let fee,note='';
+  if(age==='o3'){
+    fee=0;note='3〜5歳児クラスは幼児教育・保育の無償化の対象です。給食費（主食費・副食費）・行事費などは別途かかります。';
+  }else{
+    if(isNaN(tax)||tax<0){alert('市民税所得割額を入力してください（3〜5歳児クラスは入力不要で0円です）');return;}
+    const tier=TIERS.find(t=>t.max===Infinity?true:(t.max>0&&tax<t.max))||TIERS[TIERS.length-1];
+    fee=tier.fee;
+    note='階層のめやす：'+tier.label;
+    if(kid===2){fee=Math.round(fee/2/100)*100;note+='　／　第2子は半額（国基準のめやす。名古屋市は独自の軽減拡充あり・市公式で要確認）';}
+    if(kid>=3){fee=0;note+='　／　第3子以降は無料（めやす）';}
+  }
+  document.getElementById('rMonth').innerHTML=(fee===0?'0円':'約'+yen(fee)+'円')+'<small>／月（概算）</small>';
+  document.getElementById('rYear').textContent=fee===0?'':'年間では約'+yen(fee*12)+'円のめやすです。';
+  document.getElementById('rNote').textContent=note;
+  r.style.display='block';
+  r.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+</script>
+</body>
+</html>
