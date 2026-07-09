@@ -4,7 +4,7 @@
 市区別ランディングページ生成スクリプト（SEO用）
   python3 tools/build_city_pages.py
 data/facilities.geojson・data/summary.json・data/aki/*.json から
-city/<slug>/index.html を生成する。まずは名古屋市16区。
+city/<slug>/index.html を生成する。名古屋市16区＋空き状況データのある15市。
 デザインは index.html と同トーン（配色・フォント・ヘッダー）。
 """
 import json, os, re, html
@@ -30,6 +30,25 @@ WARDS = [
     ("名古屋市緑区",   "nagoya-midori",  "nagoya_midori.json"),
     ("名古屋市名東区", "nagoya-meito",   "nagoya_meito.json"),
     ("名古屋市天白区", "nagoya-tempaku", "nagoya_tempaku.json"),
+]
+
+# 名古屋市以外で空き状況データのある15市 → slug / 空きJSONファイル
+CITIES = [
+    ("一宮市",   "ichinomiya", "ichinomiya.json"),
+    ("春日井市", "kasugai",    "kasugai.json"),
+    ("豊橋市",   "toyohashi",  "toyohashi.json"),
+    ("岡崎市",   "okazaki",    "okazaki.json"),
+    ("豊田市",   "toyota",     "toyota.json"),
+    ("豊川市",   "toyokawa",   "toyokawa.json"),
+    ("刈谷市",   "kariya",     "kariya.json"),
+    ("安城市",   "anjo",       "anjo.json"),
+    ("知立市",   "chiryu",     "chiryu.json"),
+    ("碧南市",   "hekinan",    "hekinan.json"),
+    ("半田市",   "handa",      "handa.json"),
+    ("稲沢市",   "inazawa",    "inazawa.json"),
+    ("江南市",   "konan",      "konan.json"),
+    ("日進市",   "nisshin",    "nisshin.json"),
+    ("蒲郡市",   "gamagori",   "gamagori.json"),
 ]
 
 COLORS = {"hoiku":"#2e7d32","other":"#f9a825","kodomoen":"#7b1fa2","youchien":"#1565c0"}
@@ -64,7 +83,8 @@ def load():
     return fac, summary
 
 def page_html(city, slug, facs, summary_row, aki, ward_links):
-    ward_short = city.replace("名古屋市", "")
+    is_nagoya = city.startswith("名古屋市")
+    ward_short = city.replace("名古屋市", "") if is_nagoya else city
     total = len(facs)
     counts = {t: sum(1 for f in facs if f["t"] == t) for t in TYPE_ORDER}
     url = f"{SITE}/city/{slug}/"
@@ -109,14 +129,30 @@ def page_html(city, slug, facs, summary_row, aki, ward_links):
             f'<div class="tblwrap"><table><thead><tr><th>施設名</th><th>住所</th><th>空き</th></tr></thead>'
             f'<tbody>{"".join(trs)}</tbody></table></div>')
 
-    ward_nav = " ".join(
+    nagoya_nav = " ".join(
         f'<a href="../{s}/">{c.replace("名古屋市","")}</a>'
-        for c, s, _ in ward_links if s != slug
+        for c, s, _ in WARDS if s != slug
     )
+    city_nav = " ".join(
+        f'<a href="../{s}/">{c}</a>'
+        for c, s, _ in CITIES if s != slug
+    )
+    nav_blocks = ""
+    if nagoya_nav:
+        label = "名古屋市の他の区を見る" if is_nagoya else "名古屋市の区ごとのページ"
+        nav_blocks += f'<h2>{label}</h2>\n  <div class="wards">{nagoya_nav}</div>\n  '
+    if city_nav:
+        label = "名古屋市以外の市を見る" if is_nagoya else "他の市を見る"
+        nav_blocks += f'<h2>{label}</h2>\n  <div class="wards">{city_nav}</div>'
 
     aki_src = ""
     if aki and aki.get("source"):
         aki_src = f'空き状況の出典：<a href="{html.escape(aki["source"])}" target="_blank" rel="noopener">{city}公表データ</a>（{aki.get("asof","")}時点）。'
+
+    muni = "名古屋市" if is_nagoya else city
+    crumb = (f'<a href="../../">あいち保活マップ</a> › 名古屋市 › {ward_short}' if is_nagoya
+             else f'<a href="../../">あいち保活マップ</a> › {city}')
+    hoikuryo_label = "保育料かんたん計算（名古屋市 概算）" if is_nagoya else "保育料かんたん計算（概算）"
 
     ld = json.dumps({
         "@context": "https://schema.org",
@@ -133,10 +169,14 @@ def page_html(city, slug, facs, summary_row, aki, ward_links):
 
     aki_block = ""
     if aki:
+        city_name = "名古屋市" if is_nagoya else city
+        official = aki.get("source") or ("https://www.city.nagoya.jp/kurashi/category/8-14-4-1-3-0-0-0-0-0.html" if is_nagoya else "")
+        official_link = (f'<a href="{html.escape(official)}" target="_blank" rel="noopener">{city_name}公式ページ</a>'
+                         if official else f'{city_name}公式ページ')
         aki_block = f'''
   <div class="callout">
     <b>🈳 {ward_short}の空き状況</b><br>{aki_note}<br>
-    <span class="mut">最新の空き状況・入園可否は必ず<a href="https://www.city.nagoya.jp/kurashi/category/8-14-4-1-3-0-0-0-0-0.html" target="_blank" rel="noopener">名古屋市公式ページ</a>でご確認ください。</span>
+    <span class="mut">最新の空き状況・入園可否は必ず{official_link}でご確認ください。</span>
   </div>'''
 
     return f'''<!DOCTYPE html>
@@ -203,7 +243,7 @@ footer{{background:#14213d;color:#8fa3c7;font-size:9.5px;padding:8px 14px;line-h
 <body>
 <header><div class="h"><a href="../../">🗺 あいち保活マップ</a><span class="sub">愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較</span></div></header>
 <main>
-  <nav class="crumb"><a href="../../">あいち保活マップ</a> › 名古屋市 › {ward_short}</nav>
+  <nav class="crumb">{crumb}</nav>
   <h1>{city}の保育園・こども園・幼稚園 一覧（全{total}施設）</h1>
   <p class="lead">{city}にある保育施設 全{total}施設（保育園・保育所 {counts["hoiku"]}、認定こども園 {counts["kodomoen"]}、小規模・認可外等 {counts["other"]}、幼稚園 {counts["youchien"]}）を一覧と地図で比較できます。{ward_short}での保活・入園・転園の検討にお役立てください。</p>
   <div class="stats">
@@ -213,15 +253,14 @@ footer{{background:#14213d;color:#8fa3c7;font-size:9.5px;padding:8px 14px;line-h
     <div class="stat">幼稚園<b>{counts["youchien"]}</b></div>
   </div>
   <a class="btn" href="{html.escape(map_url)}">🗺 {ward_short}の施設を地図で見る（空き状況つき）</a>
-  <a class="btn ghost" href="../../hoikuryo/">💰 保育料かんたん計算（名古屋市 概算）</a>
+  <a class="btn ghost" href="../../hoikuryo/">💰 {hoikuryo_label}</a>
   {aki_block}
   <h2>{ward_short}の施設一覧</h2>
   {"".join(sections)}
-  <h2>名古屋市の他の区を見る</h2>
-  <div class="wards">{ward_nav}</div>
+  {nav_blocks}
   <div class="src">
     施設情報の出典：ここdeサーチ「全国施設CSV」（こども家庭庁）・国土数値情報（国土交通省）を加工。{aki_src}<br>
-    本ページの情報は公的オープンデータに基づく参考情報です。入園可否・最新の空き状況・保育料は必ず名古屋市・各施設の公式情報をご確認ください。
+    本ページの情報は公的オープンデータに基づく参考情報です。入園可否・最新の空き状況・保育料は必ず{muni}・各施設の公式情報をご確認ください。
   </div>
 </main>
 <footer>あいち保活マップ — 愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較（無料・公的オープンデータ準拠）</footer>
@@ -234,7 +273,7 @@ def main():
     facs_all = [{"n": f["properties"]["n"], "t": f["properties"]["t"],
                  "c": f["properties"]["c"], "a": f["properties"]["a"]}
                 for f in fac_geo["features"]]
-    for city, slug, akifile in WARDS:
+    for city, slug, akifile in WARDS + CITIES:
         facs = [f for f in facs_all if f["c"] == city]
         aki = None
         p = os.path.join(BASE, "data/aki", akifile)
