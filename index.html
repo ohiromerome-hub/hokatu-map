@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta name="google-site-verification" content="Ss2Cozn-ehh5-THFQ_HfOoBxU2Zm-MyNHcbKgrlnEgE" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>あいち保活マップ｜愛知県の保育園・こども園・幼稚園を空き状況つき地図で比較</title>
@@ -90,7 +91,6 @@ table.cmp td{padding:5px 3px;border-bottom:1px solid var(--line);text-align:righ
 table.cmp td:first-child{text-align:left;font-weight:700;cursor:pointer;color:var(--accent);white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
 table.cmp tr:hover td{background:#f4f7ff}
 .cmpwrap{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px}
-.wardlinks a{color:var(--accent);text-decoration:none;font-weight:700;white-space:nowrap}
 .src{font-size:10px;color:var(--muted);line-height:1.6;margin-top:14px}
 .src a{color:var(--muted)}
 /* popup */
@@ -172,17 +172,6 @@ footer a{color:#b7c8e8}
           <tbody></tbody>
         </table>
       </div>
-    </div>
-    <div class="sec">
-      <h2>📄 名古屋市の区別ガイド（一覧・空き状況）</h2>
-      <div class="wardlinks" style="font-size:11.5px;line-height:2">
-        <a href="city/nagoya-chikusa/">千種区</a>・<a href="city/nagoya-higashi/">東区</a>・<a href="city/nagoya-kita/">北区</a>・<a href="city/nagoya-nishi/">西区</a>・<a href="city/nagoya-nakamura/">中村区</a>・<a href="city/nagoya-naka/">中区</a>・<a href="city/nagoya-showa/">昭和区</a>・<a href="city/nagoya-mizuho/">瑞穂区</a>・<a href="city/nagoya-atsuta/">熱田区</a>・<a href="city/nagoya-nakagawa/">中川区</a>・<a href="city/nagoya-minato/">港区</a>・<a href="city/nagoya-minami/">南区</a>・<a href="city/nagoya-moriyama/">守山区</a>・<a href="city/nagoya-midori/">緑区</a>・<a href="city/nagoya-meito/">名東区</a>・<a href="city/nagoya-tempaku/">天白区</a>
-      </div>
-      <h2 style="margin-top:10px">📄 市別ガイド（一覧・空き状況）</h2>
-      <div class="wardlinks" style="font-size:11.5px;line-height:2">
-        <a href="city/ichinomiya/">一宮市</a>・<a href="city/kasugai/">春日井市</a>・<a href="city/toyohashi/">豊橋市</a>・<a href="city/okazaki/">岡崎市</a>・<a href="city/toyota/">豊田市</a>・<a href="city/toyokawa/">豊川市</a>・<a href="city/kariya/">刈谷市</a>・<a href="city/anjo/">安城市</a>・<a href="city/chiryu/">知立市</a>・<a href="city/hekinan/">碧南市</a>・<a href="city/handa/">半田市</a>・<a href="city/inazawa/">稲沢市</a>・<a href="city/konan/">江南市</a>・<a href="city/nisshin/">日進市</a>・<a href="city/gamagori/">蒲郡市</a>
-      </div>
-      <div style="margin-top:6px;font-size:11.5px"><a href="hoikuryo/" style="font-weight:800">💰 名古屋市の保育料 かんたん計算（概算）</a></div>
     </div>
     <div class="src">
       出典：国土数値情報（福祉施設 P14 2021年度・学校 P29 2023年度・鉄道 N02 2023年度・バス停留所 P11/バスルート N07 2022年度、国土交通省）を加工。
@@ -479,10 +468,6 @@ async function loadCore(){
   const sel=document.getElementById('citySel');
   Object.keys(sum).filter(c=>c!=='不明').sort((a,b)=>a.localeCompare(b,'ja')).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
   renderMarkers();renderTable();
-  // URLパラメータ ?city=名古屋市中区 / ハッシュ #/city/名古屋市中区 で市区を直接指定（区別ページからの着地用）
-  let cityParam=new URLSearchParams(location.search).get('city');
-  if(!cityParam){const m=location.hash.match(/^#\/city\/(.+)$/);if(m)cityParam=decodeURIComponent(m[1]);}
-  if(cityParam&&SUMMARY[cityParam])selectCity(cityParam);
 })();
 </script>
 </body>
